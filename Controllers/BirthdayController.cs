@@ -38,7 +38,6 @@ namespace Birthday_Service.Controllers
             birthday.DateOfBirth = new DateTime(birthday.Year, birthday.Month, birthday.Day);
 
             var result = birthday.Validate();
-            string spartitionKey = "1";
 
             if (result)
             {
@@ -62,6 +61,36 @@ namespace Birthday_Service.Controllers
             return result != false
                 ? (ActionResult)new OkObjectResult(birthday.DateOfBirth.ToString("dd/MM/yyyy"))
                 : new BadRequestObjectResult("Please pass a valid birthday in the request body");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetBirthday([FromQuery] string userId )
+        {
+            // check if userId in db
+            bool isValid = false;
+            try
+            {
+                isValid = await _birthdayClient.ValidateUserId(userId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            if (isValid)
+            {
+                var result = await _birthdayClient.GetBirthdays(userId).ConfigureAwait(false);
+
+                return result.Count > 0
+                    ? (ActionResult)new OkObjectResult(result)
+                    : new BadRequestResult();
+
+            }
+
+            return NotFound();
+
         }
     }
 }
