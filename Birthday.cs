@@ -31,8 +31,11 @@ namespace Birthday_Service
         [JsonProperty(PropertyName = "userId")]
         public string UserId { get; set; }
 
+        [Required]
+        [JsonProperty(PropertyName ="firstName")]
         public string FirstName { get; set; }
 
+        [JsonProperty(PropertyName = "lastName")]
         public string LastName { get; set; }
 
 
