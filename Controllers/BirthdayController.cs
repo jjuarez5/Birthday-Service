@@ -28,8 +28,7 @@ namespace Birthday_Service.Controllers
                 birthday.Day = payload.Day;
                 birthday.Id = Guid.NewGuid().ToString();
                 birthday.UserId = "JJUser";
-                birthday.FirstName = payload.FirstName;
-                birthday.LastName = payload.LastName;
+                birthday.Name = payload.Name;
             }
             catch (Exception ex)
             {
