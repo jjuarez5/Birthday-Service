@@ -44,17 +44,22 @@ namespace Birthday_Service
 
             do
             {
-                FeedIterator<BirthdayResponse> iterator =
-                    this._container.GetItemQueryIterator<BirthdayResponse>(
+                FeedIterator<Birthday> iterator =
+                    this._container.GetItemQueryIterator<Birthday>(
                         def,
                         continuationToken: contToken,
                         requestOptions: options);
                 while (iterator.HasMoreResults)
                 {
-                    FeedResponse<BirthdayResponse> response = await iterator.ReadNextAsync().ConfigureAwait(false);
-                    foreach (BirthdayResponse birthday in response)
+                    FeedResponse<Birthday> response = await iterator.ReadNextAsync().ConfigureAwait(false);
+                    foreach (Birthday birthday in response)
                     {
-                        birthdays.Add(birthday);
+                        BirthdayResponse bdayResponse = new()
+                        {
+                            Birthday = birthday.DateOfBirth.ToString("dd/MM/yyyy"),
+                            Name = birthday.Name,
+                        };
+                        birthdays.Add(bdayResponse);
                     }
                 }
             } while (contToken != null);

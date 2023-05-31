@@ -8,7 +8,6 @@ namespace Birthday_Service
     // will validate birthdays
     public class Birthday
     {
-        [JsonIgnore]
         [JsonProperty(PropertyName = "birthday")]
         public DateTime DateOfBirth { get; set; }
 
@@ -32,11 +31,8 @@ namespace Birthday_Service
         public string UserId { get; set; }
 
         [Required]
-        [JsonProperty(PropertyName ="firstName")]
-        public string FirstName { get; set; }
-
-        [JsonProperty(PropertyName = "lastName")]
-        public string LastName { get; set; }
+        [JsonProperty(PropertyName ="name")]
+        public string Name { get; set; }
 
 
         public bool Validate()
