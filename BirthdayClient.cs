@@ -17,10 +17,40 @@ namespace Birthday_Service
             this._container = dbClient.GetContainer(databaseName, containerName);
         }
 
-        public async Task<Birthday> PostBirthday( Birthday birthday )
+        public async Task<BirthdayResponse> PostBirthday( Birthday payload )
         {
+            Birthday birthday = new Birthday();
+            BirthdayResponse response = new BirthdayResponse();
+
+            // move to client
+            try
+            {
+                birthday.Year = payload.Year;
+                birthday.Month = payload.Month;
+                birthday.Day = payload.Day;
+                birthday.Id = Guid.NewGuid().ToString();
+                birthday.UserId = "JJUser";
+                birthday.Name = payload.Name;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            birthday.DateOfBirth = payload.DateOfBirth;
             var result = await this._container.CreateItemAsync<Birthday>(birthday).ConfigureAwait(false);
-            return result;
+
+            if (result.StatusCode == System.Net.HttpStatusCode.Created)
+            {
+                response = new()
+                {
+                    Birthday = birthday.DateOfBirth.ToString("dd/MM/yyyy"),
+                    Name = birthday.Name
+                };
+            }
+
+            
+            return response;
         }
 
         public async Task<List<BirthdayResponse>> GetBirthdays( string userId )
@@ -80,16 +110,6 @@ namespace Birthday_Service
                                             .Where(x => x.UserId == userId)
                                             .AsEnumerable()
                                             .FirstOrDefault().UserId;
-
-
-            //using (FeedIterator<Birthday> iterator = this._container.GetItemLinqQueryable<Birthday>()
-            //    .Where(x => x.UserId == userId).ToFeedIterator())
-            //{
-            //    if (iterator.HasMoreResults)
-            //    {
-
-            //    }
-            //}
 
                 if (string.IsNullOrEmpty(result))
                 {

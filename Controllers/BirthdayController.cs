@@ -19,32 +19,15 @@ namespace Birthday_Service.Controllers
         [HttpPost]
         public async Task<IActionResult> PostBirthday(Birthday payload )
         {
-            Birthday birthday = new();
 
-            try
-            {
-                birthday.Year = payload.Year;
-                birthday.Month = payload.Month;
-                birthday.Day = payload.Day;
-                birthday.Id = Guid.NewGuid().ToString();
-                birthday.UserId = "JJUser";
-                birthday.Name = payload.Name;
-            }
-            catch (Exception ex)
-            {
-
-                return new BadRequestObjectResult(ex);
-            }
-
-            birthday.DateOfBirth = new DateTime(birthday.Year, birthday.Month, birthday.Day);
-
-            var result = birthday.Validate();
+            var result = payload.Validate();
+            BirthdayResponse bday = new();
 
             if (result)
             {
                 try
                 {
-                    await _birthdayClient.PostBirthday(birthday).ConfigureAwait(false);
+                    bday = await _birthdayClient.PostBirthday(payload).ConfigureAwait(false);
                 }
                 catch (CosmosException ex)
                 {
@@ -60,7 +43,7 @@ namespace Birthday_Service.Controllers
             }
 
             return result != false
-                ? (ActionResult)new OkObjectResult(birthday.DateOfBirth.ToString("dd/MM/yyyy"))
+                ? (ActionResult)new OkObjectResult(bday)
                 : new BadRequestObjectResult("Please pass a valid birthday in the request body");
         }
 
