@@ -37,6 +37,7 @@ namespace Birthday_Service
 
         public bool Validate()
         {
+            this.DateOfBirth = new DateTime(Year, Month, Day);
             // greater than or equal to today and less than or equal to 100
             return ((this.DateOfBirth.Year <= DateTime.UtcNow.Year) && (this.DateOfBirth.Year > DateTime.UtcNow.Year - 100));
         }
